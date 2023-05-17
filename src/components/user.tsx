@@ -1,5 +1,7 @@
 import { memo, useState } from 'react';
 import UserEdit from './user-edit';
+import { removeUser as removeUserAction } from '../features/users-slice';
+import { useAppDispatch } from '../hooks';
 
 type UserProps = {
   user: User;
@@ -9,8 +11,10 @@ const toggle = (b: boolean): boolean => !b;
 
 const User = ({ user }: UserProps) => {
   const [editing, setEditing] = useState(false);
+  const dispatch = useAppDispatch();
   const removeUser = ({ id }: { id: string }) => {
-    console.log(`One day, this will remove a user with the ID of ${id}.`);
+    dispatch(removeUserAction(id));
+    setEditing(false);
   };
 
   return (
