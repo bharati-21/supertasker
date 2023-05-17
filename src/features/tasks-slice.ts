@@ -25,7 +25,10 @@ const tasksSlice = createSlice({
       const task = createTask(action.payload);
       state.entities.unshift(task);
     },
-    removeTask: (state) => state,
+    removeTask: (state, action: PayloadAction<Task['id']>) => {
+      const index = state.entities.findIndex(task => task.id === action.payload);
+      state.entities.splice(index, 1);
+    },
   },
 });
 

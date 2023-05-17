@@ -5,7 +5,7 @@ import Application from './components/application';
 import { makeServer } from './api';
 
 import './index.css';
-import { store } from './store';
+import store from './store';
 import { Provider } from 'react-redux';
 
 const environment = process.env.NODE_ENV;

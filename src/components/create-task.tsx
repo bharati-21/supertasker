@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { addTask } from '../features/tasks-slice';
+import { useAppDispatch } from '../hooks';
 
 const CreateTask = () => {
   const [newTaskTitle, setnewTaskTitle] = useState('');
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <form
@@ -17,6 +17,7 @@ const CreateTask = () => {
             title: newTaskTitle,
           }),
         );
+        setnewTaskTitle('');
       }}
     >
       <label htmlFor="new-task-title">
