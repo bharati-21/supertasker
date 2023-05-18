@@ -1,8 +1,13 @@
-import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
-import data from '../api/data.json';
+import {
+  createAsyncThunk,
+  createSlice,
+  nanoid,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import { removeUser } from './users-slice';
 
 type TaskState = {
+  loading?: boolean;
   entities: Task[];
 };
 
@@ -16,8 +21,17 @@ export const createTask = (draftTask: DraftTask): Task => {
 };
 
 const initialState: TaskState = {
-  entities: data.tasks,
+  entities: [],
+  loading: false,
 };
+
+export const fetchTasks = createAsyncThunk(
+  'tasks/fetchTask',
+  async (): Promise<Task[]> => {
+    const response = await fetch('/api/tasks').then((res) => res.json());
+    return response.tasks;
+  },
+);
 
 const tasksSlice = createSlice({
   initialState,
@@ -35,14 +49,22 @@ const tasksSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(removeUser, (state, action) => {
-      const userId = action.payload;
-      for (const task of state.entities) {
-        if (task.user === userId) {
-          task.user = undefined;
+    builder
+      .addCase(removeUser, (state, action) => {
+        const userId = action.payload;
+        for (const task of state.entities) {
+          if (task.user === userId) {
+            task.user = undefined;
+          }
         }
-      }
-    });
+      })
+      .addCase(fetchTasks.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchTasks.fulfilled, (state, action) => {
+        state.entities = action.payload;
+        state.loading = false;
+      });
   },
 });
 
